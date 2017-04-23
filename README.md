@@ -1,2 +1,2 @@
 # liri-node-app
-Home
+Homework I made for UNC's Coding Bootcamp 2017.

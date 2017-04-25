@@ -1,7 +1,10 @@
 var request = require("request");
 var twitter = require("twitter");
 var spotify = require("spotify");
+var fs = require("fs");
 var keys = require("./keys.js");
+var exec = require('child_process').exec;
+
 var operation = process.argv[2];
 
 var client = new twitter({
@@ -25,7 +28,7 @@ if (process.argv[2]) {
         movieSearch();
 
     } else if (operation.toLowerCase() === "do-what-it-says") {
-
+        doWhatItSays();
     }
 
 } else {
@@ -114,27 +117,21 @@ function movieSearch() {
 
     var movieName = "";
 
-    for (var i = 3; i < process.argv.length; i++) {
+    if (process.argv[3]) {
 
-        movieName += process.argv[i] + "+";
-        // if (i === (process.argv.length - 1)) {
-        //     rtMovieName += process.argv[i];
-        // } else {
-        //     rtMovieName += process.argv[i] + "_";
+        for (var i = 3; i < process.argv.length; i++) {
 
-        // }
+            movieName += process.argv[i] + "+";
+
+        }
+    } else {
+        movieName = "Mr. Nobody";
     }
 
-    request("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&r=json", function(error, response, body) {
+    request("http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&r=json&tomatoes=true", function(error, response, body) {
         // console.log('error:', error); // Print the error if one occurred 
         // console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received 
         // console.log('body:', JSON.parse(body)); // Print the HTML for the Google homepage. 
-        
-        var rtMovieName = JSON.parse(body).Title.replace(/ /g, "_");
-        rtMovieName = rtMovieName.replace(/:/g, "");
-        rtMovieName = rtMovieName.replace(/-/g, "");
-        rtMovieName = rtMovieName.replace(/__/g, "_");
-
 
         console.log("Title: " + JSON.parse(body).Title);
         console.log("Released: " + JSON.parse(body).Released);
@@ -143,18 +140,28 @@ function movieSearch() {
         console.log("Language(s): " + JSON.parse(body).Language);
         console.log("Plot: " + JSON.parse(body).Plot);
         console.log("Actors: " + JSON.parse(body).Actors);
+
         if (JSON.parse(body).Ratings) {
             for (var i = 0; i < JSON.parse(body).Ratings.length; i++) {
                 if (JSON.parse(body).Ratings[i].Source === "Rotten Tomatoes") {
                     console.log("Rotten Tomatoes Score: " + JSON.parse(body).Ratings[i].Value);
-                    console.log("Rotten Tomatoes URL: https://www.rottentomatoes.com/m/" + rtMovieName);
                 }
             }
         }
 
-
-
-
+        console.log("Rotten Tomatoes URL: " + JSON.parse(body).tomatoURL);
 
     });
+}
+
+function doWhatItSays() {
+    fs.readFile("random.txt", "utf8", function(error, data) {
+        var randomCmd = data.replace(",", " ");
+
+        var cmd = 'node liri.js ' + randomCmd;
+        exec(cmd, function(error, stdout, stderr) {
+            console.log(stdout);
+        });
+    });
+
 }

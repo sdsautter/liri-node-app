@@ -28,15 +28,22 @@ if (process.argv[2]) {
         movieSearch();
 
     } else if (operation.toLowerCase() === "do-what-it-says") {
-        doWhatItSays();
-    }
 
+        doWhatItSays();
+
+    } else if (operation.toLowerCase() === "help" || operation.toLowerCase() === "--h" || operation.toLowerCase() === "-help" || operation.toLowerCase() === "-h") {
+        console.log("Please add an action:");
+        console.log("my-tweets                                  Will display up to 20 of JamboneMcHoney's tweets");
+        console.log("spotify-this-song <song name>              Type in a song name to get some information about that song");
+        console.log("movie-this <movie name>                    Type in a movie to find out some information about that movie.");
+        console.log("do-what-it-says                            Will perform a premade action.");
+    }
 } else {
     console.log("Please add an action:");
-    console.log("my-tweets,");
-    console.log("spotify-this-song,");
-    console.log("movie-this,");
-    console.log("or do-what-it-says");
+    console.log("my-tweets                                  Will display up to 20 of JamboneMcHoney's tweets");
+    console.log("spotify-this-song <song name>              Type in a song name to get some information about that song");
+    console.log("movie-this <movie name>                    Type in a movie to find out some information about that movie.");
+    console.log("do-what-it-says                            Will perform a premade action.");
 }
 
 
